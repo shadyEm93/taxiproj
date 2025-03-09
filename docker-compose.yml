@@ -1,0 +1,40 @@
+
+
+services:
+  taxi-app:
+    build:
+      context: .
+    container_name: taxi-app
+    volumes:
+      - "./data/nyc_taxi_data_2014.csv:/app/nyc_taxi_data_2014.csv" 
+    depends_on:
+      - osrm-backend
+    command: >
+      python taxifinal.py
+
+  osrm-backend:
+    image: osrm/osrm-backend
+    container_name: osrm
+    volumes:
+      - "./data/new-york-latest.osm.pbf:/data/new-york-latest.osm.pbf" 
+      - "./data:/data"  
+    ports:
+      - "5000:5000"
+    command: >
+      osrm-routed --algorithm mld /data/new-york-latest.osrm
+    depends_on:
+      - osrm-preprocessor
+
+  osrm-preprocessor:
+    image: osrm/osrm-backend
+    container_name: osrm-preprocessor
+    volumes:
+      - "./data/new-york-latest.osm.pbf:/data/new-york-latest.osm.pbf"
+      - "./data:/data"
+    command: >
+      sh -c "
+      osrm-extract -p /opt/car.lua /data/new-york-latest.osm.pbf &&
+      osrm-partition /data/new-york-latest.osrm &&
+      osrm-customize /data/new-york-latest.osrm
+      "
+

@@ -1,0 +1,10 @@
+
+
+
+*.osrm
+*.osrm.*
+
+
+data/*
+!data/*.osm.pbf
+!data/*.csv
