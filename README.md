@@ -25,6 +25,7 @@ This project processes NYC taxi trip data and predicts trip durations by calcula
 2. Move those downloaded files (dataset and openstreet extracts) into 'data' folder before running anything else
    - The OSM file should be named `new-york-latest.osm.pbf`.
    - The dataset should be named `nyc_taxi_data_2014.csv`
-3. In the terminal use this code 'docker-compose build' to build the image
-4. after that run this code in the terminal 'docker-compose up' and start the container
+3. In the terminal use this code 'docker-compose build' to build the image (use vpn for this)
+4. after that run this code in the terminal 'docker-compose up' and start the container (turn off the vpn)
+5. Open another terminal and run this command '  docker-compose logs -f taxi-app '
  
