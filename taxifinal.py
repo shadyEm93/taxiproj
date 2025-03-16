@@ -152,8 +152,8 @@ y_pred_cv = cross_val_predict(ranfor, x, y, cv=5)
 #evaluating the model with cross-validation predictions
 mse = mean_squared_error(y, y_pred_cv)
 r_squared = r2_score(y, y_pred_cv)
-print(f'Cross-Validation MSE: {mse}')
-print(f'Cross-Validation R-squared: {r_squared}')
+print(f'Cross-Validation MSE: {mse}', flush=True)
+print(f'Cross-Validation R-squared: {r_squared}', flush=True)
 
 
 #visualize the results
@@ -165,3 +165,5 @@ plt.ylabel('Predicted Duration')
 plt.title('Prediction vs Actual values')
 plt.legend()
 plt.show()
+plt.savefig("output/results_plot.png")  
+print("Plot saved to output/results_plot.png", flush=True)
