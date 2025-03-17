@@ -14,8 +14,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 import os
 
 
-#loading the dataset
-df = pd.read_csv("data/nyc_taxi_data_2014.csv")
+#loading the dataset (also making sure the 8th column type does not cause any issues
+df = pd.read_csv("data/nyc_taxi_data_2014.csv", dtype={8: str}, low_memory=False)
 
 
 #creating a sample because the dataset is so heavy
