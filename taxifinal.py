@@ -148,7 +148,7 @@ params = {
 }
 
 #initializing GridSearchCV
-gridsearch = GridSearchCV(estimator=RandomForestRegressor(random_state=42), param_grid=params, cv=5, n_jobs=-1, verbose=2)
+gridsearch = GridSearchCV(estimator=RandomForestRegressor(random_state=42), param_grid=params, cv=5, n_jobs=-1, verbose=0)
 gridsearch.fit(x, y)
 
 #getting the best parameters with GridSearchCV
