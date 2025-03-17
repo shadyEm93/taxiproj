@@ -32,3 +32,9 @@ services:
       sh -c "osrm-extract -p /opt/car.lua /data/new-york-latest.osm.pbf &&
              osrm-partition /data/new-york-latest.osrm &&
              osrm-customize /data/new-york-latest.osrm"
+    networks:
+      - osrm-net
+
+networks:
+  osrm-net:
+    driver: bridge
