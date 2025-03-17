@@ -11,6 +11,8 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score, cross_val_predict
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
+import os
+
 
 #loading the dataset
 df = pd.read_csv("data/nyc_taxi_data_2014.csv")
@@ -148,6 +150,9 @@ print(f'Average Cross-Validation MSE: {cv_mse_scores.mean()}')
 
 #doing the prediction using cross-validation
 y_pred_cv = cross_val_predict(ranfor, x, y, cv=5)
+
+#ensuring 'output' directory exists
+os.makedirs("output", exist_ok=True)
 
 #evaluating the model with cross-validation predictions
 mse = mean_squared_error(y, y_pred_cv)
