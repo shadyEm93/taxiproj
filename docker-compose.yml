@@ -5,6 +5,7 @@ services:
     container_name: taxi-app
     volumes:
       - "./data/nyc_taxi_data_2014.csv:/app/nyc_taxi_data_2014.csv"
+      - "./output:/app/output"
     depends_on:
       - osrm-backend
     command: >
