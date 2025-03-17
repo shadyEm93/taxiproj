@@ -36,7 +36,7 @@ osrmport = 5000
 
 #function to get the real duration and distance with OSRM backend
 def result(lonsource, latsource, londestination, latdestination, retries=3, delay=2):
-     for attempt in range(1, retries + 1):
+    for attempt in range(1, retries + 1):
         try:
             response = hx.get(requrl, timeout=10)
             #parsing the response as JSON
