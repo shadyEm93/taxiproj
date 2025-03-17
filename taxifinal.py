@@ -1,5 +1,6 @@
 
 
+
 #importing required libraries
 import numpy as np
 import pandas as pd
@@ -11,8 +12,11 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score, cross_val_predict
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
+import time
 import os
 
+print("Waiting 10 seconds for OSRM service to initialize...", flush=True)
+time.sleep(20)
 
 #loading the dataset (also making sure the 8th column type does not cause any issues and selecting 5k rows since the dataset is heavy)
 df = pd.read_csv("data/nyc_taxi_data_2014.csv", nrows=50000, dtype={8: str}, low_memory=False)
@@ -37,6 +41,7 @@ osrmport = 5000
 #function to get the real duration and distance with OSRM backend
 def result(lonsource, latsource, londestination, latdestination, retries=3, delay=2):
     for attempt in range(1, retries + 1):
+        requrl = f'{osrmhost}:{osrmport}/route/v1/driving/{lonsource},{latsource};{londestination},{latdestination}'
         try:
             response = hx.get(requrl, timeout=10)
             #parsing the response as JSON
@@ -70,7 +75,7 @@ lon = osm['pickup_longitude']
 dlat = osm['dropoff_latitude']
 dlon = osm['dropoff_longitude']
 
-for l, j, p, z in zip(lat, lon, dlat, dlon):
+for idx, (l, j, p, z) in enumerate(zip(lat, lon, dlat, dlon)):
     try:
         duration, distance = result(lonsource=j, latsource=l, londestination=z, latdestination=p)
         realduration.append(duration)
@@ -80,7 +85,6 @@ for l, j, p, z in zip(lat, lon, dlat, dlon):
         print(f"Error processing coordinates ({j}, {l} -> {z}, {p}): {e}")
 
 #feature engineering
-
 #filtering the DataFrame to include only rows with valid OSRM data
 col = col.iloc[valid_indices].copy()
 
@@ -138,7 +142,7 @@ x = norm.fit_transform(x)
 params = {
     'n_estimators': [100, 200, 300],
     'max_depth': [10, 20, None],
-    'max_features': ['auto', 'sqrt', 'log2'],
+    'max_features': ['sqrt', 'log2'],
     'min_samples_split': [2, 5, 10],
     'min_samples_leaf': [1, 2, 4]
 }
@@ -186,4 +190,3 @@ plt.savefig("output/results_plot.png")
 print("Script finished execution.", flush=True)
 print("Plot saved to output/results_plot.png", flush=True)
 plt.close()
-
