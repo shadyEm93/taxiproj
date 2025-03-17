@@ -11,7 +11,7 @@ This project processes NYC taxi trip data and predicts trip durations by calcula
 - Fully dockerized setup for easy deployment.
 
 ## Prerequisites
-- Create a folder in the project root called 'data'
+- Create 2 folders in the project root called 'data' and 'output'
 - Download OpenStreetMap extracts for NYC [here](https://download.geofabrik.de/north-america/us/new-york-latest.osm.pbf)
 - Download the dataset from [kaggle](https://www.kaggle.com/datasets/kentonnlp/2014-new-york-city-taxi-trips)
 - Docker and Docker Compose installed.
@@ -23,9 +23,9 @@ This project processes NYC taxi trip data and predicts trip durations by calcula
    git clone https://github.com/shadyEm93/taxiproj.git
    cd taxiproj
 2. Move those downloaded files (dataset and openstreet extracts) into 'data' folder before running anything else
-   - The OSM file should be named `new-york-latest.osm.pbf`.
-   - The dataset should be named `nyc_taxi_data_2014.csv`
+   - The OSM file should be named `new-york-latest.osm`.
+   - The dataset should be named `nyc_taxi_data_2014`
 3. In the terminal use this code 'docker-compose build' to build the image (use vpn for this)
-4. after that run this code in the terminal 'docker-compose up' and start the container (turn off the vpn)
+4. after that run this code in the terminal 'docker-compose up' and start the container (turn off the vpn to do this)
 5. Open another terminal and run this command '  docker-compose logs -f taxi-app '
  
