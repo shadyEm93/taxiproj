@@ -35,23 +35,32 @@ osrmhost = 'http://osrm'
 osrmport = 5000
 
 #function to get the real duration and distance with OSRM backend
-def result(lonsource, latsource, londestination, latdestination):
-    requrl = f'{osrmhost}:{osrmport}/route/v1/driving/{lonsource},{latsource};{londestination},{latdestination}'
-    response = hx.get(requrl)
+def result(lonsource, latsource, londestination, latdestination, retries=3, delay=2):
+     for attempt in range(1, retries + 1):
+        try:
+            response = hx.get(requrl, timeout=10)
+            #parsing the response as JSON
+            response_data = response.json()
+            #making sure the routes exist in the response
+            if 'routes' in response_data and len(response_data['routes']) > 0:
+                bestrout = response_data['routes'][0]
+                duration = bestrout['duration']
+                distance = bestrout['distance']
+                return duration, distance
+            else:
+                raise ValueError(f"No routes found in response: {response_data}")
+        except Exception as e:
+            print(f"Attempt {attempt} failed for coordinates ({lonsource}, {latsource} -> {londestination}, {latdestination}): {e}", flush=True)
+            if attempt < retries:
+                print(f"Retrying in {delay} seconds...", flush=True)
+                time.sleep(delay)
+    raise ValueError(f"All {retries} attempts failed for coordinates ({lonsource}, {latsource} -> {londestination}, {latdestination}).")
 
-    #parse the response as JSON
-    response_data = response.json()  # Correctly parse response JSON
 
-    #making sure the 'routes' exists in the response
-    if 'routes' in response_data and len(response_data['routes']) > 0:
-        bestrout = response_data['routes'][0]
-        duration = bestrout['duration']
-        distance = bestrout['distance']
-        return duration, distance
-    else:
-        raise ValueError(f"No routes found in response: {response_data}")
 
 #initializing lists for real duration and distance
+#valid_indices to get the valid results and use them
+valid_indices = []
 realduration = []
 dist = []
 
@@ -66,10 +75,14 @@ for l, j, p, z in zip(lat, lon, dlat, dlon):
         duration, distance = result(lonsource=j, latsource=l, londestination=z, latdestination=p)
         realduration.append(duration)
         dist.append(distance)
+        valid_indices.append(idx)
     except Exception as e:
         print(f"Error processing coordinates ({j}, {l} -> {z}, {p}): {e}")
 
 #feature engineering
+
+#filtering the DataFrame to include only rows with valid OSRM data
+col = col.iloc[valid_indices].copy()
 
 #turning some data to datetime to make them util
 col['pickup_datetime'] = pd.to_datetime(col['pickup_datetime'], format='%Y-%m-%d %H:%M:%S', errors='coerce')
